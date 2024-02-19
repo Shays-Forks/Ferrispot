@@ -2,7 +2,7 @@
 mod async_client {
     use std::ops::Deref;
 
-    #[derive(Clone)]
+    #[derive(Clone, Debug)]
     pub struct AsyncClient(pub(crate) reqwest::Client);
 
     impl super::HttpClient for AsyncClient {
@@ -24,7 +24,7 @@ mod async_client {
 mod sync_client {
     use std::ops::Deref;
 
-    #[derive(Clone)]
+    #[derive(Clone, Debug)]
     pub struct SyncClient(pub(crate) reqwest::blocking::Client);
 
     impl super::HttpClient for SyncClient {
@@ -80,7 +80,7 @@ pub trait BuildHttpRequestSync: crate::private::Sealed {
 #[cfg(feature = "async")]
 #[async_trait::async_trait]
 pub trait AccessTokenExpiryAsync: crate::private::Sealed {
-    // if specialisation was a thing, this function could be refactored into two generic trait impls
+    // If specialization was a thing, this function could be refactored into two generic trait impls
     async fn handle_access_token_expired(&self) -> Result<AccessTokenExpiryResult>;
 }
 
@@ -90,11 +90,11 @@ pub trait AccessTokenExpirySync: crate::private::Sealed {
     fn handle_access_token_expired(&self) -> Result<AccessTokenExpiryResult>;
 }
 
-/// Result to having tried to refresh a client's access token.
+/// Result of having tried to refresh a client's access token.
 #[derive(Debug, PartialEq, Eq)]
 pub enum AccessTokenExpiryResult {
     /// Refreshing the token succeeded
     Ok,
-    /// Refreshing an access token is not applicable to this client
+    /// Refreshing an access token does not apply to this client
     Inapplicable,
 }
